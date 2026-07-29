@@ -7,7 +7,7 @@ export const users = sqliteTable("users", {
   role: text("role", { enum: ["owner", "accountant", "viewer"] }).notNull(),
   passwordHash: text("password_hash").notNull(),
   passwordSalt: text("password_salt").notNull(),
-  passwordIterations: integer("password_iterations").notNull().default(310000),
+  passwordIterations: integer("password_iterations").notNull().default(100000),
   mustChangePassword: integer("must_change_password", { mode: "boolean" }).notNull().default(true),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
   scopes: text("scopes").notNull().default('["loan:read","loan:export"]'),

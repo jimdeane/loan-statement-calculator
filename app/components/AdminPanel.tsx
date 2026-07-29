@@ -7,8 +7,10 @@ export default function AdminPanel(){
  async function load(){const r=await fetch("/api/admin/users");const b=await r.json();if(r.ok)setUsers(b.users);else setError(b.error)}
  useEffect(()=>{load()},[]);
  async function create(e:React.FormEvent<HTMLFormElement>){e.preventDefault();setError("");const d=new FormData(e.currentTarget);
-  const r=await fetch("/api/admin/users",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({username:d.get("username"),displayName:d.get("displayName"),role:d.get("role"),temporaryPassword:d.get("temporaryPassword"),scopes:["loan:read","loan:export"]})});
-  const b=await r.json();if(!r.ok){setError(b.error);return}(e.currentTarget).reset();await load()
+  try {
+   const r=await fetch("/api/admin/users",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({username:d.get("username"),displayName:d.get("displayName"),role:d.get("role"),temporaryPassword:d.get("temporaryPassword"),scopes:["loan:read","loan:export"]})});
+   const b=await r.json().catch(()=>({error:"The server could not create the account."}));if(!r.ok){setError(b.error);return}(e.currentTarget).reset();await load()
+  } catch { setError("The account could not be created. Please try again.") }
  }
  async function action(userId:string,action:string){let temporaryPassword;if(action==="reset_password"){temporaryPassword=window.prompt("New temporary password (14+ characters):");if(!temporaryPassword)return}
   const r=await fetch("/api/admin/users",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({userId,action,temporaryPassword})});const b=await r.json();if(!r.ok)setError(b.error);else await load()

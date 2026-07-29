@@ -6,7 +6,7 @@ export type AppUser = {
   role: "owner" | "accountant" | "viewer";
   mustChangePassword: boolean; scopes: string[];
 };
-const COOKIE = "loan_session", SESSION_SECONDS = 12 * 60 * 60, ITERATIONS = 310_000;
+const COOKIE = "loan_session", SESSION_SECONDS = 12 * 60 * 60, ITERATIONS = 100_000;
 function b64(bytes: Uint8Array) { let s = ""; for (const b of bytes) s += String.fromCharCode(b); return btoa(s); }
 function bytes(value: string) { const s = atob(value); return Uint8Array.from(s, c => c.charCodeAt(0)); }
 export async function sha256(value: string) {
