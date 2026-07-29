@@ -1,0 +1,4 @@
+import {NextResponse} from "next/server";
+const source="https://www.bankofengland.co.uk/boeapps/database/Bank-Rate.asp";
+const rates=[["2023-08-03",5.25],["2024-08-01",5],["2024-11-07",4.75],["2025-02-06",4.5],["2025-05-08",4.25],["2025-08-07",4],["2025-12-18",3.75]].map(x=>({date:String(x[0]),rate:Number(x[1])}));
+export async function GET(){try{const r=await fetch(source,{next:{revalidate:21600}});if(!r.ok)throw 0;const text=await r.text();const current=Number(text.match(/Current official Bank Rate[\s\S]{0,500}?(\d+\.\d+)%/)?.[1]);if(Number.isFinite(current)&&current!==rates.at(-1)?.rate)rates.push({date:new Date().toISOString().slice(0,10),rate:current});return NextResponse.json({rates,source,live:true,retrievedAt:new Date().toISOString()})}catch{return NextResponse.json({rates,source,live:false,retrievedAt:new Date().toISOString()})}}
