@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Initial setup · Loan Statement</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-card">
+      <p class="eyebrow">ONE-TIME SETUP</p>
+      <h1>Create your login</h1>
+      <p>Create the shared login you will give to your friend. The password is stored locally as a secure hash.</p>
+      <form method="post">
+        <label>Your display name<input name="display_name" autocomplete="name" required value="Jim"></label>
+        <label>Shared username<input name="username" autocomplete="username" required autofocus></label>
+        <label>Shared password<input name="password" type="password" autocomplete="new-password" minlength="10" required></label>
+        <small>Use at least 10 characters and send it to your friend separately from the calculator link.</small>
+        {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+        <button type="submit">Create login</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

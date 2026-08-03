@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loan Statement Calculator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="user-bar">
+    <span>Private loan statement</span>
+    <div><span>Signed in as {{ display_name }}</span><form method="post" action="{{ url_for('logout') }}"><button type="submit">Sign out</button></form></div>
+  </nav>
+  <main>
+    <header>
+      <div><p class="eyebrow">PRIVATE LOAN · MONTHLY STATEMENT</p><h1>Loan Statement Calculator</h1><p>Auditable interest-only statements using official Bank of England Bank Rate history.</p></div>
+      <aside><small>Current Bank Rate</small><strong id="current-rate">—</strong><small id="current-rate-date">Loading…</small></aside>
+    </header>
+    <div class="grid">
+      <section class="controls">
+        <h2><i>01</i> Loan terms</h2>
+        <label>Principal (£)<input id="principal" type="number" value="100000" min="0" step="0.01"></label>
+        <label>Interest rate discount (%)<input id="discount" type="number" value="-1.5" step="0.01"></label>
+        <div class="dates">
+          <label>Start date<input id="start" type="date" value="2023-12-19"></label>
+          <label>End date<input id="end" type="date"></label>
+        </div>
+        <fieldset><legend>Interest charged</legend><label><input name="timing" type="radio" value="arrears" checked> In arrears</label><label><input name="timing" type="radio" value="advance"> In advance</label></fieldset>
+        <div class="rate"><b>● Bank Rate history</b><span id="rate-status">Checking official source…</span><a href="https://www.bankofengland.co.uk/boeapps/database/Bank-Rate.asp" target="_blank" rel="noreferrer">View official source ↗</a></div>
+        <h2><i>02</i> Payments</h2>
+        <label class="upload"><input id="payments-file" type="file" accept=".csv"><b>Choose payment CSV</b><span id="file-status">No CSV selected</span></label>
+        <p class="note">CSV columns: date, amount. Without a CSV, each month defaults to its calculated interest. With a CSV, an absent loan month repeats the previous month’s payment; before the first CSV payment, calculated interest is assumed.</p>
+        <button id="export" type="button">Export Excel statement <span>↗</span></button>
+        <p class="form-error" id="error" hidden></p>
+      </section>
+      <section class="results">
+        <div class="cards">
+          <article><span>Closing balance</span><strong id="closing-balance">—</strong><small>Principal + unpaid interest</small></article>
+          <article><span>Interest charged</span><strong id="interest-charged">—</strong><small id="period-count">0 periods</small></article>
+          <article><span>Payments applied</span><strong id="payments-applied">—</strong><small id="payment-count">0 actual CSV rows</small></article>
+          <article><span>Unpaid interest</span><strong id="unpaid-interest">—</strong><small id="statement-end">At —</small></article>
+        </div>
+        <div class="table">
+          <div class="title"><div><p class="eyebrow">CALCULATED STATEMENT</p><h2>Monthly movement</h2></div><span>Actual/365 · daily rate weighting</span></div>
+          <div class="scroll"><table><thead><tr><th>Period</th><th>Dates</th><th>Bank Rate</th><th>Loan rate</th><th>Interest</th><th>Payment</th><th>Source</th><th>Unpaid interest</th><th>Principal</th><th>Balance</th></tr></thead><tbody id="statement-body"></tbody></table></div>
+        </div>
+        <div class="method"><b>Calculation convention</b><span>Monthly periods follow the loan anniversary date. Interest is simple interest on principal, calculated daily at Bank Rate plus the discount. Payments clear accrued interest first; excess reduces principal. “Advance” changes the due date, not the historical interest amount.</span></div>
+      </section>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='calculator.js') }}"></script>
+</body>
+</html>
